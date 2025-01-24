@@ -1,0 +1,59 @@
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Vivado-generated files
+*.log
+*.jou
+*.wdb
+*.str
+*.xpr
+*.runs/
+*.data/
+*.sim/
+*.cache/
+*.hw/
+*.ip_user_files/
+*.xgui/
+
+# Temporary and build files
+*.tmp
+*.bak
+*.swp
+*.swo
+*.svf
+*.bit
+*.hwh
+*.elf
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# PYNQ-specific files
+*.tcl
+*.bif
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+
+# Compiled binaries and libraries
+*.o
+*.a
+*.so
+
+# Testbench simulation output
+*.vcd
+*.wlf
+*.fst
+*.log
+
+# Backup files
+*~
+*.backup
+
+# Git-related files
+*.orig
+*.rej
