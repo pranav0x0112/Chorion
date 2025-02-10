@@ -4,10 +4,10 @@
 This project aims to implement the **ChaCha20** encryption algorithm on the **PYNQ-Z2 FPGA**. ChaCha20 is a high-speed stream cipher used in modern cryptographic applications, known for its simplicity and security. The goal is to create a **hardware-accelerated** implementation that efficiently processes ChaCha20 operations on FPGA.  
 
 ## Features  
-✅ **ChaCha20 Stream Cipher** – 20-round encryption implementation  
-✅ **FPGA Acceleration** – Designed for efficient parallel processing  
-✅ **Python API** – Interface for testing and verification  
-✅ **Optimized for PYNQ** – Using FPGA hardware overlays  
+ **ChaCha20 Stream Cipher** – 20-round encryption implementation  
+ **FPGA Acceleration** – Designed for efficient parallel processing  
+ **Python API** – Interface for testing and verification  
+ **Optimized for PYNQ** – Using FPGA hardware overlays  
 
 
 ChaCha20-PYNQ
