@@ -58,4 +58,3 @@ PYNQ provides Python APIs for easy interaction with the board’s peripherals an
 
 ---
 
-This is a concise overview of **PYNQ-Z2**, **overlays**, **design methodology**, and **libraries**. Let me know if you need more details on any section!
