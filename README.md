@@ -18,7 +18,6 @@ ChaCha20-PYNQ
 │── tools         
 │── docs          
 │── README.md      
-│── Requirements.md  
 ``` 
 ### Prerequisites  
 - **PYNQ-Z2 FPGA** with PYNQ OS installed  
