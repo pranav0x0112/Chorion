@@ -75,18 +75,10 @@ python tools/test_chacha20.py
 
 # References
 
-1. **RFC 8439** - ChaCha20 and Poly1305 for IETF Protocols  
-   - [https://tools.ietf.org/html/rfc8439](https://tools.ietf.org/html/rfc8439)  
+- [RFC 8439 - ChaCha20 and Poly1305 for IETF Protocols](https://tools.ietf.org/html/rfc8439)  
+- [Daniel J. Bernstein's ChaCha20 Paper](https://cr.yp.to/chacha/chacha-20080128.pdf)  
+- [ChaCha20 on Wikipedia](https://en.wikipedia.org/wiki/Salsa20)  
+- [PYNQ Official Documentation](http://www.pynq.io/documentation.html)  
+- [Xilinx Vivado Documentation](https://www.xilinx.com/products/design-tools/vivado.html)  
 
-2. **Daniel J. Bernstein's ChaCha20 Paper**  
-   - [https://cr.yp.to/chacha/chacha-20080128.pdf](https://cr.yp.to/chacha/chacha-20080128.pdf)  
-
-3. **ChaCha20 on Wikipedia**  
-   - [https://en.wikipedia.org/wiki/Salsa20](https://en.wikipedia.org/wiki/Salsa20)  
-
-4. **PYNQ Official Documentation**  
-   - [http://www.pynq.io/documentation.html](http://www.pynq.io/documentation.html)  
-
-5. **Xilinx Vivado Documentation**  
-   - [https://www.xilinx.com/products/design-tools/vivado.html](https://www.xilinx.com/products/design-tools/vivado.html)  
 
