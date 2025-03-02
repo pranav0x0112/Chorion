@@ -6,12 +6,12 @@ ChaCha20 is a **high-speed stream cipher** used in modern cryptographic applicat
 The goal is to create a **hardware-accelerated implementation** that efficiently processes ChaCha20 operations on FPGA.  
 
 ## Features
-- ✅ **ChaCha20 Stream Cipher** – 20-round encryption implementation  
-- 🚀 **FPGA Acceleration** – Designed for efficient parallel processing  
-- 🐍 **Python API** – Interface for testing and verification  
-- 🎛️ **Optimized for PYNQ** – Uses FPGA hardware overlays  
+- **ChaCha20 Stream Cipher** – 20-round encryption implementation  
+- **FPGA Acceleration** – Designed for efficient parallel processing  
+- **Python API** – Interface for testing and verification  
+- **Optimized for PYNQ** – Uses FPGA hardware overlays  
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 │── src         # SystemVerilog implementation of ChaCha20
@@ -23,13 +23,13 @@ The goal is to create a **hardware-accelerated implementation** that efficiently
 ```
 
 
-## 🛠 Prerequisites
+## Prerequisites
 
 - **PYNQ-Z2 FPGA** with PYNQ OS installed  
 - **Xilinx Vivado & Vitis** for FPGA development  
 - **Python 3.x** with PYNQ libraries  
 
-## 🔧 Installation  
+## Installation  
 
 Run these commands:   
 ```sh
