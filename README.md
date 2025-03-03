@@ -75,7 +75,7 @@ python tools/test_chacha20.py
 
 # References
 
-- [Daniel J. Bernstein's Salsa20 Paper](https://cr.yp.to/snuffle/salsa20/20071225.pdf)
+- [Daniel J. Bernstein's Salsa20 Paper](https://cr.yp.to/snuffle/salsafamily-20071225.pdf)
 - [Daniel J. Bernstein's ChaCha20 Paper](https://cr.yp.to/chacha/chacha-20080128.pdf)  
 - [ChaCha20 on Wikipedia](https://en.wikipedia.org/wiki/Salsa20)  
 - [PYNQ Official Documentation](http://www.pynq.io/documentation.html)  
