@@ -44,9 +44,9 @@ python tools/test_chacha20.py
 # Roadmap
 
 ## Phase 1: Research & Planning
-- [ ] Understand the ChaCha20 algorithm
-- [ ] Study FPGA implementation strategies
-- [ ] Learn PYNQ framework and overlay development
+- [x] Understand the ChaCha20 algorithm
+- [x] Study FPGA implementation strategies
+- [x] Learn PYNQ framework and overlay development
 
 ## Phase 2: Initial Software Implementation
 - [ ] Implement ChaCha20 in Python for verification
