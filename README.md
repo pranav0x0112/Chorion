@@ -49,8 +49,8 @@ python tools/test_chacha20.py
 - [x] Learn PYNQ framework and overlay development
 
 ## Phase 2: Initial Software Implementation
-- [ ] Implement ChaCha20 in Python for verification
-- [ ] Develop test cases and validate correctness
+- [x] Implement ChaCha20 in Python for verification
+- [x] Develop test cases and validate correctness
 
 ## Phase 3: Hardware Design
 - [ ] Design ChaCha20 in SystemVerilog
