@@ -1,6 +1,6 @@
 // Code your testbench here
 // or browse Examples
-module chacha20_top_tb();
+module chacha20_top_tb;
   logic clk, reset, start;
   logic [255:0] key;
   logic [31:0] counter;
