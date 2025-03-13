@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 clear
 echo "Welcome to world of ChaCha20! Choose an option to continue."
