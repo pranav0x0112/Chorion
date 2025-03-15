@@ -26,9 +26,17 @@ module chacha20_top_tb;
       #10 start = 1;
       #10 start = 0;
       
-      wait(done);
+      wait(done || $time > 100000);
       
-      $display("Keystream : %h", keystream);
+      if(done)
+        begin
+          $display("Keystream: %h", keystream);
+        end
+      else
+        begin
+          $display("Error: Timeout waiting for 'done' signal!");
+        end
+      
       #10 $finish;
     end
 endmodule
