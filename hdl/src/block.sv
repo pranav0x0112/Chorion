@@ -24,23 +24,23 @@ module chacha20_block(input logic clk, reset, start, input logic [31:0] state_in
         begin
           if(round_counter < 20)
             begin
-              if(round_counter % 2 ==0)
+              if(round_counter % 2 == 0)
                 begin
-                  quarter_round(state_reg[0], state_reg[4], state_reg[8], state_reg[12]);
-                  quarter_round(state_reg[1], state_reg[5], state_reg[9], state_reg[13]);
-                  quarter_round(state_reg[2], state_reg[6], state_reg[10], state_reg[14]);
-                  quarter_round(state_reg[3], state_reg[7], state_reg[11], state_reg[15]);
+                  quarter_round qr0 (state_reg[0], state_reg[4], state_reg[8], state_reg[12], state_reg[0], state_reg[4], state_reg[8], state_reg[12]);
+                  quarter_round qr1 (state_reg[1], state_reg[5], state_reg[9], state_reg[13], state_reg[1], state_reg[5], state_reg[9], state_reg[13]);
+                  quarter_round qr2 (state_reg[2], state_reg[6], state_reg[10], state_reg[14], state_reg[2], state_reg[6], state_reg[10], state_reg[14]);
+                  quarter_round qr3 (state_reg[3], state_reg[7], state_reg[11], state_reg[15], state_reg[3], state_reg[7], state_reg[11], state_reg[15]);
                 end
-              else 
+              else
                 begin
-                  quarter_round(state_reg[0], state_reg[5], state_reg[10], state_reg[15]);
-                  quarter_round(state_reg[1], state_reg[6], state_reg[11], state_reg[12]);
-                  quarter_round(state_reg[2], state_reg[7], state_reg[8], state_reg[13]);
-                  quarter_round(state_reg[3], state_reg[4], state_reg[9], state_reg[14]);
+                  quarter_round qr4 (state_reg[0], state_reg[5], state_reg[10], state_reg[15], state_reg[0], state_reg[5], state_reg[10], state_reg[15]);
+                  quarter_round qr5 (state_reg[1], state_reg[6], state_reg[11], state_reg[12], state_reg[1], state_reg[6], state_reg[11], state_reg[12]);
+                  quarter_round qr6 (state_reg[2], state_reg[7], state_reg[8], state_reg[13], state_reg[2], state_reg[7], state_reg[8], state_reg[13]);
+                  quarter_round qr7 (state_reg[3], state_reg[4], state_reg[9], state_reg[14], state_reg[3], state_reg[4], state_reg[9], state_reg[14]);
                 end
               round_counter <= round_counter + 1;
             end
-          else
+          else 
             begin
               for(int i = 0; i < 16; i++)
                 begin
@@ -52,5 +52,6 @@ module chacha20_block(input logic clk, reset, start, input logic [31:0] state_in
         end
     end
 endmodule
-                  
+
+
                   
