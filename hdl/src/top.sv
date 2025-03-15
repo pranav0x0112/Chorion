@@ -5,7 +5,7 @@ module chacha20_top(input logic clk, reset, start, input logic [255:0] key, inpu
   
   chacha20_state DUT1(.clk(clk), .reset(reset), .key(key), .counter(counter), .nonce(nonce), .state(state));
   
-  chacha20_block DUT2(.clk(clk), ..reset(reset), .start(start), .state_in(state), .keystream(keystream_words), .done(done));
+  chacha20_block DUT2(.clk(clk), .reset(reset), .start(start), .state_in(state), .keystream(keystream_words), .done(done));
   
   generate
     genvar i;
