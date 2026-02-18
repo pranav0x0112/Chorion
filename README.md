@@ -1,4 +1,4 @@
-# ChaCha20 FPGA Accelerator
+# Chorion - ChaCha20 FPGA Accelerator
 
 ## Overview
 
