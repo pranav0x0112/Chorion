@@ -86,5 +86,4 @@ module chacha20_block(
       end
     end
   end
-
 endmodule
