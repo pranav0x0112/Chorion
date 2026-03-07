@@ -32,11 +32,6 @@ module chacha20_top_tb;
 
     reset = 1;
     start = 0;
-    
-    // RFC 8439 Section 2.4.2 test vectors, packed as little-endian 32-bit words
-    // (consistent with new state.sv: state[4]=key[31:0], state[13]=nonce[31:0])
-    // rfc_key  bytes: 00..1f  → LE32 words with word 0 at key[31:0]
-    // rfc_nonce bytes: 000000090000004a00000000 → LE32: 0x09000000, 0x4a000000, 0x00000000
     key = 256'h1f1e1d1c_1b1a1918_17161514_13121110_0f0e0d0c_0b0a0908_07060504_03020100;
     nonce = 96'h00000000_4a000000_09000000;  // nonce[95:64]=0, [63:32]=0x4a000000, [31:0]=0x09000000
     counter = 32'h00000001;
