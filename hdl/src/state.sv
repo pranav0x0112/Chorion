@@ -28,10 +28,6 @@ module chacha20_state(
       state[1]  <= C1;
       state[2]  <= C2;
       state[3]  <= C3;
-      // Key: AXI wrapper provides little-endian 32-bit words via
-      //   .key({reg_key[7], ..., reg_key[0]})
-      // so key[31:0]=reg_key[0]=RFC bytes 0-3, key[255:224]=reg_key[7]=RFC bytes 28-31.
-      // No byte-swap needed — the AXI host (Python) already writes LE words.
       state[4]  <= key[31:0];    // reg_key[0]  = RFC key bytes  0- 3
       state[5]  <= key[63:32];   // reg_key[1]  = RFC key bytes  4- 7
       state[6]  <= key[95:64];   // reg_key[2]  = RFC key bytes  8-11
@@ -42,8 +38,6 @@ module chacha20_state(
       state[11] <= key[255:224]; // reg_key[7]  = RFC key bytes 28-31
       // Counter
       state[12] <= counter;
-      // Nonce: .nonce({reg_nonce[2], reg_nonce[1], reg_nonce[0]})
-      // so nonce[31:0]=reg_nonce[0]=RFC nonce bytes 0-3, etc.
       state[13] <= nonce[31:0];    // reg_nonce[0] = RFC nonce bytes 0-3
       state[14] <= nonce[63:32];   // reg_nonce[1] = RFC nonce bytes 4-7
       state[15] <= nonce[95:64];   // reg_nonce[2] = RFC nonce bytes 8-11
