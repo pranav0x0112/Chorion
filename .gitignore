@@ -57,3 +57,4 @@ __pycache__/
 # Git-related files
 *.orig
 *.rej
+hdl/build/

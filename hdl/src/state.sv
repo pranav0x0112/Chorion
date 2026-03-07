@@ -28,19 +28,19 @@ module chacha20_state(
       state[1]  <= C1;
       state[2]  <= C2;
       state[3]  <= C3;
-      state[4]  <= {key[231:224], key[239:232], key[247:240], key[255:248]};  // bytes 0-3
-      state[5]  <= {key[199:192], key[207:200], key[215:208], key[223:216]};  // bytes 4-7
-      state[6]  <= {key[167:160], key[175:168], key[183:176], key[191:184]};  // bytes 8-11
-      state[7]  <= {key[135:128], key[143:136], key[151:144], key[159:152]};  // bytes 12-15
-      state[8]  <= {key[103:96], key[111:104], key[119:112], key[127:120]};   // bytes 16-19
-      state[9]  <= {key[71:64], key[79:72], key[87:80], key[95:88]};          // bytes 20-23
-      state[10] <= {key[39:32], key[47:40], key[55:48], key[63:56]};          // bytes 24-27
-      state[11] <= {key[7:0], key[15:8], key[23:16], key[31:24]};             // bytes 28-31
-      // Counter (32 bits = 1 word)
+      state[4]  <= key[31:0];    // reg_key[0]  = RFC key bytes  0- 3
+      state[5]  <= key[63:32];   // reg_key[1]  = RFC key bytes  4- 7
+      state[6]  <= key[95:64];   // reg_key[2]  = RFC key bytes  8-11
+      state[7]  <= key[127:96];  // reg_key[3]  = RFC key bytes 12-15
+      state[8]  <= key[159:128]; // reg_key[4]  = RFC key bytes 16-19
+      state[9]  <= key[191:160]; // reg_key[5]  = RFC key bytes 20-23
+      state[10] <= key[223:192]; // reg_key[6]  = RFC key bytes 24-27
+      state[11] <= key[255:224]; // reg_key[7]  = RFC key bytes 28-31
+      // Counter
       state[12] <= counter;
-      state[13] <= {nonce[71:64], nonce[79:72], nonce[87:80], nonce[95:88]};  // bytes 0-3
-      state[14] <= {nonce[39:32], nonce[47:40], nonce[55:48], nonce[63:56]};  // bytes 4-7
-      state[15] <= {nonce[7:0], nonce[15:8], nonce[23:16], nonce[31:24]};     // bytes 8-11
+      state[13] <= nonce[31:0];    // reg_nonce[0] = RFC nonce bytes 0-3
+      state[14] <= nonce[63:32];   // reg_nonce[1] = RFC nonce bytes 4-7
+      state[15] <= nonce[95:64];   // reg_nonce[2] = RFC nonce bytes 8-11
     end
   end
   
