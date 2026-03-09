@@ -1,106 +1,137 @@
 `timescale 1ns / 1ps
-
+// -----------------------------------------------------------------------------
+// chacha20_top_tb — AXI-Stream testbench (FIFO-backed model)
+//
+// Models upstream/downstream AXIS Data FIFOs:
+//   • Upstream  (TX): drives tvalid/tdata, waits for tready from DUT
+//   • Downstream (RX): m_axis_tready held high (FIFO always has space)
+//
+// Tests RFC 8439 §2.4.2 test vector.
+// -----------------------------------------------------------------------------
 module chacha20_top_tb;
-  
-  logic clk;
-  logic reset;
-  logic start;
-  logic [255:0] key;
-  logic [31:0] counter;
-  logic [95:0] nonce;
-  logic [511:0] keystream;
-  logic done;
 
-  chacha20_top DUT(
-    .clk(clk), 
-    .reset(reset), 
-    .start(start), 
-    .key(key), 
-    .counter(counter), 
-    .nonce(nonce), 
-    .keystream(keystream), 
-    .done(done)
-  );
+    // ── Clock & reset ──────────────────────────────────────────────────────
+    logic aclk    = 0;
+    logic aresetn = 0;
+    always #5 aclk = ~aclk;   // 100 MHz
 
-  initial begin
-    clk = 0;
-    forever #5 clk = ~clk;
-  end
-  
-  initial begin
-    $display("Starting ChaCha20 Top Module Test...");
+    // ── AXI-Stream signals ─────────────────────────────────────────────────
+    logic [31:0] s_axis_tdata  = 0;
+    logic        s_axis_tvalid = 0;
+    logic        s_axis_tready;
+    logic        s_axis_tlast  = 0;
 
-    reset = 1;
-    start = 0;
-    key = 256'h1f1e1d1c_1b1a1918_17161514_13121110_0f0e0d0c_0b0a0908_07060504_03020100;
-    nonce = 96'h00000000_4a000000_09000000;  // nonce[95:64]=0, [63:32]=0x4a000000, [31:0]=0x09000000
-    counter = 32'h00000001;
+    logic [31:0] m_axis_tdata;
+    logic        m_axis_tvalid;
+    logic        m_axis_tready = 1;   // downstream FIFO always ready
+    logic        m_axis_tlast;
 
-    #20 reset = 0;
-    $display("Reset released at time %0t", $time);
+    // ── DUT ────────────────────────────────────────────────────────────────
+    chacha20_top DUT (
+        .aclk          (aclk),
+        .aresetn       (aresetn),
+        .s_axis_tdata  (s_axis_tdata),
+        .s_axis_tvalid (s_axis_tvalid),
+        .s_axis_tready (s_axis_tready),
+        .s_axis_tlast  (s_axis_tlast),
+        .m_axis_tdata  (m_axis_tdata),
+        .m_axis_tvalid (m_axis_tvalid),
+        .m_axis_tready (m_axis_tready),
+        .m_axis_tlast  (m_axis_tlast)
+    );
 
-    #30;
+    // ── RFC 8439 §2.4.2 test vectors ──────────────────────────────────────
+    // Input: 12 words in stream order (key[0..7], nonce[0..2], counter)
+    logic [31:0] input_words [0:11] = '{
+        32'h03020100, 32'h07060504, 32'h0b0a0908, 32'h0f0e0d0c,  // key[0..3]
+        32'h13121110, 32'h17161514, 32'h1b1a1918, 32'h1f1e1d1c,  // key[4..7]
+        32'h09000000, 32'h4a000000, 32'h00000000,                 // nonce[0..2]
+        32'h00000001                                               // counter
+    };
 
-    $display("Starting encryption at time %0t", $time);
-    start = 1;
-    
-    repeat(3) @(posedge clk);
-    start = 0;
-    #1; 
-    
-    $display("Waiting for 20 rounds to complete...");
-    $display("Initial state check:");
-    $display("  State[0] = %h (should be 61707865)", DUT.state[0]);
-    $display("  State[4] = %h (should be 03020100)", DUT.state[4]);
-    $display("  State[12] = %h (should be 00000001)", DUT.state[12]);
+    // Expected keystream (RFC 8439 §2.4.2)
+    logic [31:0] expected [0:15] = '{
+        32'he4e7f110, 32'h15593bd1, 32'h1fdd0f50, 32'hc47120a3,
+        32'hc7f4d1c7, 32'h0368c033, 32'h9aaa2204, 32'h4e6cd4c3,
+        32'h466482d2, 32'h09aa9f07, 32'h05d7c214, 32'ha2028bd9,
+        32'hd19c12b5, 32'hb94e16de, 32'he883d0cb, 32'h4e3c50a2
+    };
 
-    #10;
-    $display("After start pulse - done=%b", done);
+    // ── Received keystream storage ─────────────────────────────────────────
+    logic [31:0] received [0:15];
 
-    repeat (30) begin
-      @(posedge clk);
-      if (DUT.block_inst.processing) begin
-        $display("  Round %0d at time %0t", DUT.block_inst.round_counter, $time);
-      end
-      if (done) break;
+    // ── Task: send one word — models upstream AXIS FIFO output ────────────
+    // FIFO presents data with tvalid=1 and waits for tready from DUT.
+    task automatic fifo_send(input logic [31:0] data, input logic last);
+        @(posedge aclk);           // align to clock edge first
+        s_axis_tdata  = data;
+        s_axis_tvalid = 1'b1;
+        s_axis_tlast  = last;
+        // Wait until DUT accepts (tready high on this or a future posedge)
+        while (!s_axis_tready) @(posedge aclk);
+        @(posedge aclk);           // one more cycle so DUT latches the word
+        s_axis_tvalid = 1'b0;
+        s_axis_tlast  = 1'b0;
+    endtask
+
+    // ── Main test ──────────────────────────────────────────────────────────
+    integer i;
+    integer pass_count;
+
+    initial begin
+        $display("=== ChaCha20 AXI-Stream TB — RFC 8439 §2.4.2 ===");
+
+        // Reset
+        aresetn = 0;
+        repeat (4) @(posedge aclk);
+        aresetn = 1;
+        repeat (2) @(posedge aclk);
+        $display("Reset released at %0t ns", $time);
+
+        // ── Send 12-word input stream (upstream FIFO model) ────────────────
+        $display("Sending 12-word input stream...");
+        for (i = 0; i < 12; i++)
+            fifo_send(input_words[i], (i == 11));
+        $display("Input stream sent at %0t ns", $time);
+
+        // ── Receive 16-word output stream (downstream FIFO model) ──────────
+        // m_axis_tready is held high; capture each word when tvalid fires.
+        $display("Waiting for keystream output...");
+        for (i = 0; i < 16; i++) begin
+            @(posedge aclk);
+            while (!m_axis_tvalid) @(posedge aclk);
+            received[i] = m_axis_tdata;
+        end
+        $display("Keystream received at %0t ns", $time);
+
+        // ── Check results ──────────────────────────────────────────────────
+        $display("");
+        $display("Word  Got       Expected   Result");
+        $display("----  ---------  ---------  ------");
+        pass_count = 0;
+        for (i = 0; i < 16; i++) begin
+            if (received[i] === expected[i]) begin
+                $display("  %2d  %08h   %08h   OK", i, received[i], expected[i]);
+                pass_count++;
+            end else begin
+                $display("  %2d  %08h   %08h   FAIL <<<", i, received[i], expected[i]);
+            end
+        end
+        $display("");
+        if (pass_count == 16)
+            $display("ALL 16 WORDS MATCH — RFC 8439 compliant!");
+        else
+            $display("FAILED: %0d/16 words correct", pass_count);
+
+        #100;
+        $finish;
     end
 
-    fork
-      begin
-        wait(done);
-        @(posedge clk);  
-        $display("Encryption completed at time %0t", $time);
-        $display("Debug - checking block internals:");
-        $display("  initial_state[0] = %h", DUT.block_inst.initial_state[0]);
-        $display("  state_reg[0] = %h", DUT.block_inst.state_reg[0]);
-        $display("Keystream generated:");
-        $display("  Word  0: %h", keystream[31:0]);
-        $display("  Word  1: %h", keystream[63:32]);
-        $display("  Word  2: %h", keystream[95:64]);
-        $display("  Word  3: %h", keystream[127:96]);
-        $display("  Word  4: %h", keystream[159:128]);
-        $display("  Word  5: %h", keystream[191:160]);
-        $display("  Word  6: %h", keystream[223:192]);
-        $display("  Word  7: %h", keystream[255:224]);
-        $display("  Word  8: %h", keystream[287:256]);
-        $display("  Word  9: %h", keystream[319:288]);
-        $display("  Word 10: %h", keystream[351:320]);
-        $display("  Word 11: %h", keystream[383:352]);
-        $display("  Word 12: %h", keystream[415:384]);
-        $display("  Word 13: %h", keystream[447:416]);
-        $display("  Word 14: %h", keystream[479:448]);
-        $display("  Word 15: %h", keystream[511:480]);
-      end
-      begin
-        #500000;  
-        $display("ERROR: Timeout waiting for 'done' signal at time %0t", $time);
-        $display("Check if the design is stuck in processing");
-      end
-    join_any
-    
-    #100;
-    $display("Test completed at time %0t", $time);
-    $finish;
-  end
-  
+    // ── Timeout watchdog ───────────────────────────────────────────────────
+    initial begin
+        #500_000_000;
+        $display("ERROR: Timeout at %0t ns", $time);
+        $finish;
+    end
+
 endmodule
